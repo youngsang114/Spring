@@ -1,8 +1,10 @@
 package hello.core.member;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
-
+@Component // memoryMemberRepository
 public class MemoryMemberRepository implements MemberRepository{
     // 아직 데이터베이스가 확정이 되지 않았기 때문에, 메모리에 HashMap을 이용해서 데이터를 넣어주는
     // MemoryMemberRepository를 만들어준다
