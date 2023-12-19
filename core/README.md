@@ -54,14 +54,20 @@
 ---
 ### 1. 자바코드로 직접 스프링 빈을 등록하는 방법
 
-- **ApplicationContext** : 스프링 컨테이너 , 인터페이스
-- **AnnotationConfigApplicationContext**는 ApplicationContext를 구현한 클래스이다. 이걸로 스프링 컨테이너를 만든다.
+- `ApplicationContext` : 스프링 컨테이너 , 인터페이스
+- `AnnotationConfigApplicationContext`는 `ApplicationContext`를 구현한 클래스이다. 이걸로 스프링 컨테이너를 만든다.
 - 스프링 컨테이너틑 xml,등등으로 만들 수 있지만 자바 설정 클래스인 AppConfig를 가장 많이 사용한다.
 - 스프링 컨테이너 생성 과정
   - new AnnotationConfigApplicationContext()로 **스프링 컨테이너**를 생성한다.
-  - 스프링 컨테이너를 생성할 때 구상정보를 파라미터로 넘기는데 이때 AppConig.class를 넣어준다 -> 그러면 AppConfig클래스가 **스프링 빈**으로 **자동 등록** 된다.
-  - 이때 AppConfig 클래스에 **@Bean**이 붙은 메서드를 스프링 컨테이너 안의 스프링 빈 저장소에 저장하는데, **메서드이름을 빈이름으로** , **return 값으로 반환값의 객체의 참조값**을 넣어준다
+  - 스프링 컨테이너를 생성할 때 구상정보를 파라미터로 넘기는데 이때 `AppConig.class`를 넣어준다 -> 그러면 AppConfig클래스가 **스프링 빈**으로 **자동 등록** 된다.
+  - 이때 AppConfig 클래스에 `@Bean`이 붙은 메서드를 스프링 컨테이너 안의 스프링 빈 저장소에 저장하는데, **메서드이름을 빈이름으로** , **return 값으로 반환값의 객체의 참조값**을 넣어준다
   - 그 후에 AppConfig 클래스 코드에 반환값의 생성자의 파라미터에 의존관계를 주입할 메서드명을 넣어주어서 **DI**를 만족한다
       - 다형성의 원칙에서 보자면 메서드를 만들때 우리가 역활과 구현을 구분하듯이, 이름 옆에 역할(추상적인 것)을 적고, 반환 타입에 구현(구체적인 것)을 적어준다
       - ApplicationContext ac = new AnnotationConfigApplicationContext(TestConfig.class); 이렇게
       - 이 코드를 보고 역할에 관련되어서 이러이러한 구현체를 반환하는구나~라고 알 수 있다
+   
+  - 스프링 빈 조회하는 방법: `ac.getBean(빈이름,타입)`, `ac.getBean(타입)`, 조회대상 스프링 빈 없으면 예외 발생
+  - 동일한 타입이 둘 이상 오류 -> 1. 빈이름과 타입 모두 적어서 반환 받기, `ac.getBeansOfType()`을 써서 Map형식으로 해당 타입의 모든 빈을 조회하기
+  - 싱글톤 패턴 -> ``@Configuration``을 이용해 바이트 코드를 조작하는 CGLIB기술을 이용해 싱글톤을 보장한다
+    - CGLIB 바이트코드 조작 라이브러리를 사용해 AppConfig를 상속받은 임의의 다른 클래스를 만들고 그 다른 클래스를 스프링 빈으로 등록한다.
+    - 스프링 설정 정보에는 항상 `@Configuration`을 붙이자 -> 싱글톤을 보장함
